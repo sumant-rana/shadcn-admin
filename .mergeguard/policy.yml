@@ -1,0 +1,25 @@
+# MergeGuard policy pack — defines which concepts fire as gates,
+# which paths trigger prompt-canary suites, and which model-id
+# regexes force a canary run.
+concept_policies:
+  - rule_id: concept-policy.billing-side-effect
+    concept: billing-side-effect
+    severity: block
+    message: "Billing side-effect detected without an /* @mergeguard:approved */ marker."
+  - rule_id: concept-policy.auth-check
+    concept: auth-check
+    severity: warn
+    message: "New endpoint added; ensure auth-check is wired before merging."
+  - rule_id: concept-policy.pii-leak
+    concept: pii-leak
+    severity: warn
+    message: "Possible PII in log statement."
+
+prompt_canaries:
+  changed_paths:
+    - "prompts/**"
+    - "agents/**"
+  model_id_regex: "claude-(opus|sonnet|haiku)-[0-9]"
+
+runtime_contracts:
+  enabled: false

@@ -1,0 +1,3 @@
+{"case_id":"triage-001","input":{"message":"my credit card was charged twice"},"expected":{"category":"billing","priority":"high"}}
+{"case_id":"triage-002","input":{"message":"i forgot my password"},"expected":{"category":"auth","priority":"medium"}}
+{"case_id":"triage-003","input":{"message":"the button is misaligned on safari"},"expected":{"category":"ui","priority":"low"}}
