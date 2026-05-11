@@ -1,0 +1,33 @@
+# MergeGuard policy pack — Stage 4 + Stage 6 config.
+# Schema (loader.py): rules: [{id, when, require, severity, remediation?}]
+# 'when' is a DSL selector ('concept("...")'), 'require' is the
+# accompanying assertion ('require_any("...")', 'preceded_by("...")',
+# 'evidence("test", "<glob>")'). Severities: block | warn | info.
+enforce: false
+promoted_rules: []
+rules:
+  - id: billing-needs-idempotency
+    when: 'concept("billing-side-effect")'
+    require: 'require_any("idempotency-key-check")'
+    severity: block
+    remediation: "Add an idempotency-key check before the Stripe call."
+  - id: pii-write-needs-auth
+    when: 'concept("pii-write")'
+    require: 'preceded_by("auth-check")'
+    severity: warn
+    remediation: "Ensure auth.require() runs before this PII write."
+  - id: external-http-needs-timeout
+    when: 'concept("external-http-call")'
+    require: 'require_any("timeout-configured")'
+    severity: warn
+    remediation: "Configure a timeout=N on the HTTP call."
+
+# Stage 6 prompt-canary triggers (separate top-level block).
+prompt_canaries:
+  changed_paths:
+    - "prompts/**"
+    - "agents/**"
+  model_id_regex: "claude-(opus|sonnet|haiku)-[0-9]"
+
+runtime_contracts:
+  enabled: false
